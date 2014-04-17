@@ -1,0 +1,17 @@
+
+<!--
+
+html
+
+!-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>terms of service</title>
+    <link href="/public/styles/build/styles.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+   {{=it.content}}
+  </body>
+</html>
