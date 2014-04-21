@@ -1,35 +1,59 @@
+
+/**
+ * Module dependencies.
+ */
+
 var express = require('express')
   , http = require('http')
   , requirejs = require('requirejs')
-  , fs = require('fs');;
+  , fs = require('fs')
+  , acceptLanguage = require('accept-language')
+  , tos = {
+      'zh' : fs.readFileSync(__dirname + '/content/zh-CN/tos.html', 'utf8'),
+      'en' : fs.readFileSync(__dirname + '/content/en-US/tos.html', 'utf8')
+    };
+
+/**
+ * Express app.
+ */
 
 var app = express();
-
-app.set('port', process.env.PORT || 3300);
-// app.use(express.logger('dev'));
+app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname));
+
+/**
+ * RequireJS
+ */
 
 requirejs.config({
   baseUrl : __dirname,
   nodeRequire : require
 });
 
-var tmpl = requirejs('./public/templates/tmpl');
+/**
+ * Template
+ */
+
+global.tmpl = requirejs('./public/templates/tmpl');
+
+/**
+ * Set language properties
+ */
+
+acceptLanguage.default({
+  code : 'en',
+  region : 'US'
+});
+acceptLanguage.codes(['en', 'zh']);
 
 app.get('/about/terms', function(req, res) {
-  var language = req.get('Accept-Language');
-//  console.log(language);
-  if(language == 'cn'){
-    res.send(tmpl.html({
-      content : fs.readFileSync('tos.html', 'utf8')
-    }));
-  }
-  else{
-    res.send(tmpl.html({
-      content : fs.readFileSync('tos-en.html', 'utf8')
-    }));
-  }
-})
+  var language = acceptLanguage.parse(req.get('Accept-Language'));
+  res.send(tmpl.html({
+    title : 'Terms of Service',
+    locale : language[0].code,
+    content : tos[language[0].code]
+  }));
+});
 
 http.createServer(app).listen(app.get('port'),function() {
   console.log('Server started on port: ' + app.get('port'));

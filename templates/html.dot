@@ -6,10 +6,10 @@ html
 !-->
 
 <!DOCTYPE html>
-<html>
+<html lang="{{=it.locale}}">
   <head>
-    <title>terms of service</title>
-    <link href="/public/styles/build/styles.css" rel="stylesheet" type="text/css">
+    <title>{{=it.title}}</title>
+    <link href="/styles/styles.css" rel="stylesheet" type="text/css">
   </head>
   <body>
    {{=it.content}}
